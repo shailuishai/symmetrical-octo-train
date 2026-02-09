@@ -1,0 +1,15 @@
+name: "Generate OG Images"
+on: pull_request  # Сработает, когда вы создадите PR с новым постом
+
+jobs:
+  generate_og_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: BoyWithSilverWings/generate-og-image@3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        with:
+          path: src/images/post-images/  # Куда сохранять готовые картинки
+          ignorePatterns: "/README.md"   # Какие файлы игнорировать
