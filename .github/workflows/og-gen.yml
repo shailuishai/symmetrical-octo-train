@@ -1,0 +1,38 @@
+name: "Generate OG Images"
+
+# Экшен будет запускаться каждый раз, когда вы создаете или обновляете Pull Request
+on:
+  pull_request:
+    branches:
+      - main # Укажите вашу основную ветку
+
+jobs:
+  generate_og_job:
+    runs-on: ubuntu-latest
+    # Даем экшену права на запись, чтобы он мог добавить картинку в ваш репозиторий
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Важно: загружаем историю, чтобы экшен мог сделать коммит обратно
+          fetch-depth: 0
+
+      - name: Generate Images
+        uses: BoyWithSilverWings/generate-og-image@3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        with:
+          # Укажите папку, где лежат ваши .md или .mdx файлы
+          # Если они в корне, оставьте просто "./"
+          # path: "posts/" 
+          
+          # Укажите папку, КУДА сохранять картинки
+          path: "assets/og-images/"
+          
+          # Файлы, которые нужно игнорировать (через запятую)
+          ignorePatterns: "/README.md, /LICENSE.md"
